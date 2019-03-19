@@ -107,7 +107,7 @@ QInt QInt::operator & (const QInt&x) const
 	QInt Result;
 	memset(Result.Data, 0, 16);
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		Result.Data[i] = this->Data[i] & x.Data[i];
 	}
@@ -199,3 +199,4 @@ bool QInt::isNegative() const
 
 	return false;
 }
+
