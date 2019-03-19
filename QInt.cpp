@@ -13,6 +13,22 @@ QInt::QInt(const string&Binary)
 		}
 	}
 }
+//Hàm khỏi tạo bằng cách truyền vào dãy bit nhị phân.
+QInt::QInt(bool* Binary)
+{
+	memset(this->Data, 0, 16);
+	int BinSize = 0;
+	while (Binary[BinSize] == 0 || Binary[BinSize] == 1)
+		BinSize++;
+	for (size_t i = 0; i < BinSize; i++)
+	{
+		if (Binary[i] == 1)
+		{
+			this->Data[3 - (BinSize - 1 - i) / 32] = this->Data[3 - (BinSize - 1 - i) / 32] | ((1 << ((BinSize - 1 - i) % 32)));
+		}
+	}
+}
+
 //Hàm hủy dữ liệu của kiểu QInt (Không có xử lý gì đặc biệt).
 QInt::~QInt(){}
 
@@ -26,6 +42,116 @@ unsigned int* QInt::getData() const
 	return Result;
 }
 
+//---------------------------------NHÓM TOÁN TỬ VÀ PHÉP TOÁN SỐ HỌC---------------------------------
+// toan tu *
+QInt QInt::operator * (QInt x) const
+{
+	QInt Result;
+
+	QInt Temp = *this;
+
+	QInt One("1"); // 1
+	bool Negative = false; //kiem tra so am
+
+	if ((Temp.isNegative() && !x.isNegative()) || (!Temp.isNegative() && x.isNegative()))//kiem tra trai dau
+	{
+		Negative = true;
+	}
+	if (x.isNegative())
+	{
+		x = ~(x - One); //neu am thi chuyen sang dang so duong
+	}
+	if (Temp.isNegative())
+	{
+		Temp = ~(Temp - One); //neu am thi chuyen sang dang so duong
+	}
+	//nhan 2 so
+	while (!(x.isNegative() || x.isEqualZero()))
+	{
+		if (((x & One) - One).isEqualZero()) //x le thi cong ket qua voi Temp
+		{
+
+			Result = Result + Temp;
+		}
+
+		Temp = Temp << 1; //nhan temp cho 2;
+		x = x >> 1; //chia x cho 2.
+	}
+
+	// neu 2 so trai dau
+	if (Negative == true)
+	{
+		Result = ~Result + One; //chuyet ket qua ve dang bu 2.
+	}
+
+	return Result;
+}
+// toan tu /
+QInt QInt::operator / (QInt x)
+{
+	QInt Result;
+
+	if (this->isEqualZero() || x.isEqualZero()) // kiem tra kq va x co bang 0 khong
+	{
+		return Result;
+	}
+	else
+	{
+		QInt One("1");
+
+		if ((x - One).isEqualZero())
+		{
+			Result = *this;
+		}
+		else
+		{
+			QInt Temp = *this;
+			int k = 16;
+			bool Negative = false;
+
+			if ((Temp.isNegative() && !x.isNegative()) || (!Temp.isNegative() && x.isNegative()))//neu 2 so trai dau
+			{
+				Negative = true;
+			}
+
+			if (x.isNegative())
+			{
+				x = ~(x - One); //am thi chuyen ve so duong
+			}
+			if (Temp.isNegative())
+			{
+				Temp = ~(Temp - One); //am thi chuyen ve so duong
+			}
+
+			while (k > 0)
+			{
+				Result = Result << 1;
+				Result.Data[0] = Result.Data[0] | ((Temp.Data[3] & (1 << 31)) >> 31);
+				Temp = Temp << 1;
+
+				Result = Result - x;
+				if (Result.isNegative())
+				{
+					Result = Result + x;
+				}
+				else
+				{
+					Temp.Data[0] = Temp.Data[0] | 1;
+				}
+
+				--k;
+			}
+
+			Result = Temp;
+			if (Negative == true)
+			{
+				Result = ~Result + One;
+			}
+		}
+	}
+
+	return Result;
+}
 //toan tu +.
 QInt QInt::operator + (QInt x) const
 {
@@ -46,7 +172,11 @@ QInt QInt::operator + (QInt x) const
 
 	return Result;
 }
-
+//toan tu -.
+QInt QInt::operator - (QInt x) const
+{
+	return (*this + x.QInttoTwosComplement());
+}
 //Toán tử gán =.
 QInt& QInt::operator = (const QInt&x)
 {
@@ -200,3 +330,254 @@ bool QInt::isNegative() const
 	return false;
 }
 
+//Hàm chuyển đổi số QInt nhị phân sang thập lục phân
+string BinToHex(bool *bit)
+{
+	string tempRes;
+	string result;
+	bool tempBit[128]; //do 16bytes nen chuoi bit dai nhat 128
+
+	//dem do dai chuoi bit dau vao
+	int dem = 0;
+	for (int i = 0; i < 128; i++)
+	{
+		if (bit[i] == true || bit[i] == false)
+		{
+			dem++;
+		}
+		else break;
+	}
+
+	//lap 128 bit cho de thuc hien
+	int tempSize = dem;
+	if (tempSize < 128) //neu size cua chuoi bool <128 thi chuan bi chen` so 0 trong tat ca cac bit con lai
+	{
+		int tempSub = 128 - tempSize;
+		for (int i = 127; i >= tempSub; i--) //push nguoc tu cuoi chuoi
+		{
+			tempBit[i] = bit[tempSize - 1];
+			tempSize--;
+		}
+		for (int i = 0; i < tempSub; i++) // push lap day 28bit
+		{
+			tempBit[i] = false;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < 128; i++) // push lap day 28bit
+		{
+			tempBit[i] = bit[i];
+		}
+	}
+
+	//chuan bi chuyen tu BIN -> HEX
+	for (int i = 0; i < 128; i++)
+	{
+		if (tempBit[i] == true) //neu bool dung thi push 1
+		{
+			tempRes.push_back('1');
+		}
+		else tempRes.push_back('0'); //sai push 0
+
+		if (i % 4 == 3) //lay ra 4bit de xu li
+		{
+			if (tempRes == "0000")//0
+			{
+				result.push_back('0');
+			}
+			else
+			{
+				if (tempRes == "0001")//1
+				{
+					result.push_back('1');
+				}
+				else
+				{
+					if (tempRes == "0010")//2
+					{
+						result.push_back('2');
+					}
+					else
+					{
+						if (tempRes == "0011")//3
+						{
+							result.push_back('3');
+						}
+						else
+						{
+							if (tempRes == "0100")//4
+							{
+								result.push_back('4');
+							}
+							else
+							{
+								if (tempRes == "0101")//5
+								{
+									result.push_back('5');
+								}
+								else
+								{
+									if (tempRes == "0110")//6
+									{
+										result.push_back('6');
+									}
+									else
+									{
+										if (tempRes == "0111")//7
+										{
+											result.push_back('7');
+										}
+										else
+										{
+											if (tempRes == "1000")//8
+											{
+												result.push_back('8');
+											}
+											else
+											{
+												if (tempRes == "1001")//9
+												{
+													result.push_back('9');
+												}
+												else
+												{
+													if (tempRes == "1010")//10
+													{
+														result.push_back('A');
+													}
+													else
+													{
+														if (tempRes == "1011")//11
+														{
+															result.push_back('B');
+														}
+														else
+														{
+															if (tempRes == "1100")//12
+															{
+																result.push_back('C');
+															}
+															else
+															{
+																if (tempRes == "1101")//13
+																{
+																	result.push_back('D');
+																}
+																else
+																{
+																	if (tempRes == "1110")//14
+																	{
+																		result.push_back('E');
+																	}
+																	else
+																	{
+																		if (tempRes == "1111")//15
+																		{
+																			result.push_back('F');
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			tempRes.clear();
+		}
+	}
+	//xoa so 0 thua o dau chuoi hex 
+	while (result.front() == '0')
+	{
+		result.erase(0, 1);
+	}
+	return result;
+}
+
+//Hàm chuyển đổi số QInt thập phân sang nhị phân
+bool* DecToBin(QInt x)
+{
+	bool* res=new bool[128];
+	for (size_t i = 0; i < 128; i++)
+	{
+		res[i] = (x.getData()[3 - (127 - i) / 32] & (1 << ((127 - i) % 32))) >> ((127 - i) % 32);
+	}
+	return res;
+}
+
+//Hàm chuyển đổi số QInt thập phân sang thập lục phân:
+string DecToHex(QInt x)
+{
+	string Res;
+	bool tempBit[128];
+	for (int i = 0; i < 128; i++)
+	{
+		if (DecToBin(x)[i] == true)
+		{
+			tempBit[i] = true;
+		}
+		else
+		{
+			tempBit[i] = false;
+		}
+	}
+	Res = BinToHex(tempBit);
+	return Res;
+}
+
+//Chia số nguyên string Str cho 2 lấy phần nguyên
+string StrDivTwo(const string &Str)
+{
+	string Result;
+	int Temp = 0;
+
+	for (int i = 0; i < Str.size(); i++)
+	{
+		Temp = Temp * 10 + (Str[i] - '0');
+
+		if (i > 0 || (i == 0 && Temp >= 2))
+		{
+			Result.push_back((Temp / 2) + '0');
+		}
+
+		Temp = Temp % 2;
+	}
+
+	return Result;
+}
+
+//Chuyển chuỗi số nguyên string x sang chuỗi nhị phân kiểu bool
+bool* CharToBit(string x)
+{
+	bool Negative = false;
+	bool *Result = new bool[128];
+	for (int i = 0; i < 128; i++) Result[i] = 0;
+	if (x[0] == '-')
+	{
+		x.erase(x.begin());
+		Negative = true;
+	}
+	int k = 127;
+	while (x != "")
+	{
+		Result[k] = (x[x.size() - 1] - '0') % 2;
+		x = StrDivTwo(x);
+		k--;
+	}
+	//Nếu là chuỗi ban đầu là số âm.
+	if (Negative == true)
+	{
+		QInt Result2(Result); //Đưa vài số kiểu QInt.
+		Result2 = Result2.QInttoTwosComplement(); //Chuyển sang dạng bù 2.
+		Result = DecToBin(Result2); //Đưa lại về nhị phân.
+	}
+	return Result;
+}
