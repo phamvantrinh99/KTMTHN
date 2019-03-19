@@ -4,12 +4,12 @@ QInt::QInt(){};
 //Hàm khỏi tạo bằng cách truyền vào chuỗi bit nhị phân.
 QInt::QInt(const string&Binary)
 {
-	memset(this->m_Data, 0, 16);
+	memset(this->Data, 0, 16);
 	for (size_t i = 0; i < Binary.size(); i++)
 	{
 		if (Binary[i] == '1')
 		{
-			this->m_Data[3 - (Binary.size() - 1 - i) / 32] = this->m_Data[3 - (Binary.size() - 1 - i) / 32] | ((1 << ((Binary.size() - 1 - i) % 32)));
+			this->Data[3 - (Binary.size() - 1 - i) / 32] = this->Data[3 - (Binary.size() - 1 - i) / 32] | ((1 << ((Binary.size() - 1 - i) % 32)));
 		}
 	}
 }
@@ -22,7 +22,7 @@ unsigned int* QInt::getData() const
 {
 	unsigned int* Result = new unsigned int[4];
 	for (int i = 0; i < 4; i++)
-		Result[i] = this->m_Data[i];
+		Result[i] = this->Data[i];
 	return Result;
 }
 
@@ -51,7 +51,7 @@ QInt QInt::operator + (QInt x) const
 QInt& QInt::operator = (const QInt&x)
 {
 	for (int i = 0; i < 4; i++)
-		this->m_Data[i] = x.m_Data[i];
+		this->Data[i] = x.Data[i];
 	return *this;
 }
 
@@ -60,23 +60,23 @@ QInt& QInt::operator = (const QInt&x)
 QInt QInt::operator >> (const int&shift)
 {
 	QInt Result;
-	memset(Result.m_Data, 0, 16);
+	memset(Result.Data, 0, 16);
 
-	unsigned int SignBit = (1 << 31) & this->m_Data[0];
-	Result.m_Data[3] = this->m_Data[3] >> shift;
+	unsigned int SignBit = (1 << 31) & this->Data[0];
+	Result.Data[3] = this->Data[3] >> shift;
 	for (int i = 2; i >= 0; i--)
 	{
 		//Đưa các bit tràn ra ngoài vào phần block 4 bytes thấp hơn.
 		for (int j = 0; j < shift; j++)
 		{
 
-			Result.m_Data[i + 1] = Result.m_Data[i + 1] | (((1 << j) & this->m_Data[i]) << (32 - shift));
+			Result.Data[i + 1] = Result.Data[i + 1] | (((1 << j) & this->Data[i]) << (32 - shift));
 		}
 
-		Result.m_Data[i] = this->m_Data[i] >> shift; //Tiến hành dịch bit.
+		Result.Data[i] = this->Data[i] >> shift; //Tiến hành dịch bit.
 	}
 	for (int i = 0; i < shift; i++)
-		Result.m_Data[0] = Result.m_Data[0] | (SignBit >> i); //Giữ lại bit dấu.
+		Result.Data[0] = Result.Data[0] | (SignBit >> i); //Giữ lại bit dấu.
 
 	return Result;
 }
@@ -84,21 +84,20 @@ QInt QInt::operator >> (const int&shift)
 QInt QInt::operator << (const int&shift)
 {
 	QInt Result;
-	memset(Result.m_Data, 0, 16);
+	memset(Result.Data, 0, 16);
 
-	unsigned int SignBit = (1 << 31) & this->m_Data[0];
-	Result.m_Data[0] = this->m_Data[0] << shift;
+	unsigned int SignBit = (1 << 31) & this->Data[0];
+	Result.Data[0] = this->Data[0] << shift;
 	for (int i = 1; i < 4; i++)
 	{
 		//Đưa các bit tràn ra ngoài vào phần block 4 bytes cao hơn.
 		for (int j = 0; j < shift; j++)
 		{
-			Result.m_Data[i - 1] = Result.m_Data[i - 1] | (((1 << (31 - j)) & this->m_Data[i]) >> (32 - shift));
+			Result.Data[i - 1] = Result.Data[i - 1] | (((1 << (31 - j)) & this->Data[i]) >> (32 - shift));
 		}
 
-		Result.m_Data[i] = this->m_Data[i] << shift; //Tiến hành dịch bit.
+		Result.Data[i] = this->Data[i] << shift; //Tiến hành dịch bit.
 	}
-	Result.m_Data[0] = Result.m_Data[0] | SignBit; //Giữ lại bit dấu.
 
 	return Result;
 }
@@ -106,11 +105,11 @@ QInt QInt::operator << (const int&shift)
 QInt QInt::operator & (const QInt&x) const
 {
 	QInt Result;
-	memset(Result.m_Data, 0, 16);
+	memset(Result.Data, 0, 16);
 
 	for (int i = 0; i < 3; i++)
 	{
-		Result.m_Data[i] = this->m_Data[i] & x.m_Data[i];
+		Result.Data[i] = this->Data[i] & x.Data[i];
 	}
 
 	return Result;
@@ -119,11 +118,11 @@ QInt QInt::operator & (const QInt&x) const
 QInt QInt::operator | (const QInt&x) const
 {
 	QInt Result;
-	memset(Result.m_Data, 0, 16);
+	memset(Result.Data, 0, 16);
 
 	for (int i = 0; i < 4; i++)
 	{
-		Result.m_Data[i] = this->m_Data[i] | x.m_Data[i];
+		Result.Data[i] = this->Data[i] | x.Data[i];
 	}
 
 	return Result;
@@ -132,11 +131,11 @@ QInt QInt::operator | (const QInt&x) const
 QInt QInt::operator ^ (const QInt&x) const
 {
 	QInt Result;
-	memset(Result.m_Data, 0, 16);
+	memset(Result.Data, 0, 16);
 
 	for (int i = 0; i < 4; i++)
 	{
-		Result.m_Data[i] = this->m_Data[i] ^ x.m_Data[i];
+		Result.Data[i] = this->Data[i] ^ x.Data[i];
 	}
 
 	return Result;
@@ -146,7 +145,7 @@ QInt& QInt::operator ~ ()
 {
 	for (int i = 0; i < 4; i++)
 	{
-		this->m_Data[i] = ~this->m_Data[i];
+		this->Data[i] = ~this->Data[i];
 	}
 
 	return *this;
@@ -155,18 +154,18 @@ QInt& QInt::operator ~ ()
 QInt& QInt::RoL()
 {
 	//Lưu bit bị đẩy ra ngoài.
-	unsigned int TempBit = (1 << 31) & this->m_Data[0];
+	unsigned int TempBit = (1 << 31) & this->Data[0];
 	*this = *this << 1; //Dịch trái 1 bit.
-	this->m_Data[3] = this->m_Data[3] | (TempBit >> 31); //Chèn bit vùa bị đẩy ra vào.
+	this->Data[3] = this->Data[3] | (TempBit >> 31); //Chèn bit vùa bị đẩy ra vào.
 
 	return *this;
 }
 //Phép toán xoay phải
 QInt& QInt::RoR()
 {
-	int TempBit = 1 & this->m_Data[3];
+	int TempBit = 1 & this->Data[3];
 	*this = *this >> 1; //Dịch phải 1 bit.
-	this->m_Data[0] = this->m_Data[0] | (TempBit << 31); //Chèn bit vùa bị đẩy ra vào.
+	this->Data[0] = this->Data[0] | (TempBit << 31); //Chèn bit vùa bị đẩy ra vào.
 
 	return *this;
 }
@@ -176,7 +175,7 @@ bool QInt::isEqualZero() const
 {
 	for (int i = 0; i < 4; i++)
 	{
-		if (this->m_Data[i] != 0)
+		if (this->Data[i] != 0)
 		{
 			return false;
 		}
@@ -193,7 +192,7 @@ QInt QInt::QInttoTwosComplement()
 //Hàm kiểm tra số âm.
 bool QInt::isNegative() const
 {
-	if (((this->m_Data[0] & (1 << 31)) >> 31) == 1)
+	if (((this->Data[0] & (1 << 31)) >> 31) == 1)
 	{
 		return true;
 	}
