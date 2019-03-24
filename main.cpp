@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 				string p2 = s.substr(0, s.find(' '));
 				s.erase(0, s.find(' ') + 1);
 				string str = s.substr(0, s.length());
-				if (p1 == "2")
+				if (p1 == "2" && (str != "~" || str != "RoL" || str != "RoR"))
 				{
 					QInt Result(str);
 					if (p2 == "10") //thao tác xử lí chuyển đổi cơ số từ 2 -> 10
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 						Out << Final << endl;
 					}
 				}
-				if (p1 == "10")
+				if (p1 == "10" && (str != "~" || str != "RoL" || str != "RoR"))
 				{
 					bool *temp = new bool[128];
 					for (int i = 0; i < 128; i++) temp[i] = CharToBit(str)[i];
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
 						Out << Final << endl;
 					}
 				}
-				if (p1 == "16")
+				if (p1 == "16" && (str != "~" || str != "RoL" || str != "RoR"))
 				{
 					bool*temp = new bool[128];
 					for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
@@ -131,6 +131,75 @@ int main(int argc, char *argv[])
 						Out << Final << endl;
 					}
 				}
+				if (str == "~")
+				{
+					QInt Result;
+					if (p1 == "10") // xử lí bit ở cơ số 10
+					{
+						bool *temp = new bool[128];
+						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p1)[i];
+						QInt a(temp);
+						Result = ~a;
+					}
+					if (p1 == "2") // xử lí bit ở cơ số 2
+					{
+						QInt a(str);
+						Result = ~a;
+					}
+					if (p1 == "16")
+					{
+						bool*temp = new bool[128];
+						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
+						QInt a(temp);
+						Result = ~a;
+					}
+				}
+				if (str == "RoL")
+				{
+					QInt Result;
+					if (p1 == "10") // xử lí bit ở cơ số 10
+					{
+						bool *temp = new bool[128];
+						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p1)[i];
+						QInt a(temp);
+						Result = ~a;
+					}
+					if (p1 == "2") // xử lí bit ở cơ số 2
+					{
+						QInt a(str);
+						Result = ~a;
+					}
+					if (p1 == "16")
+					{
+						bool*temp = new bool[128];
+						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
+						QInt a(temp);
+						Result = ~a;
+					}
+				}
+				if (str == "RoR")
+				{
+					QInt Result;
+					if (p1 == "10") // xử lí bit ở cơ số 10
+					{
+						bool *temp = new bool[128];
+						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p1)[i];
+						QInt a(temp);
+						Result = ~a;
+					}
+					if (p1 == "2") // xử lí bit ở cơ số 2
+					{
+						QInt a(str);
+						Result = ~a;
+					}
+					if (p1 == "16")
+					{
+						bool*temp = new bool[128];
+						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
+						QInt a(temp);
+						Result = ~a;
+					}
+				}
 			}
 			if (space == 3) //input có 3 khoảng trắng sẽ là các pháp thao tác trên bit
 			{
@@ -140,36 +209,101 @@ int main(int argc, char *argv[])
 				s.erase(0, s.find(' ') + 1);
 				string Calc = s.substr(0, s.find(' '));
 				s.erase(0, s.find(' ') + 1);
-				string len = s.substr(0, s.length()); cout << n << " " << str << " " << Calc << " " << len << endl;
+				string len = s.substr(0, s.length());
 				if (n == "10") // xử lí bit ở cơ số 10
 				{
 					bool *temp = new bool[128];
 					for (int i = 0; i < 128; i++) temp[i] = CharToBit(str)[i];
-					QInt a(temp);
+					QInt a(temp), Result;
 					if (Calc == ">>")
 					{
-						QInt Result = a >> stoi(len, 0, 10); 
+						Result = a >> stoi(len, 0, 10); 
 					}
 					if (Calc == "<<")
 					{
-						QInt Result = a << stoi(len, 0, 10);
+						Result = a << stoi(len, 0, 10);
 					}
-
+					if (Calc == "&" || Calc == "|" || Calc == "^")
+					{
+						bool *temp1 = new bool[128];
+						for (int i = 0; i < 128; i++) temp1[i] = CharToBit(len)[i];
+						QInt b(temp1);
+						if (Calc == "&")
+						{
+							Result = a & b;
+						}
+						else if (Calc == "|")
+						{
+							Result = a | b;
+						}
+							else Result = a^b;
+					}
 					Final = QInttoDecString(Result);
-					Out << Final << endl; cout << Final << endl;
+					Out << Final << endl;
 
 				}
 				if (n == "2") // xử lí bit ở cơ số 2
 				{
-					QInt a(str);
+					QInt a(str), Result;
 					if (Calc == ">>")
 					{
-						QInt Result = a >> stoi(len, 0, 10);
+						Result = a >> stoi(len, 0, 10);
 					}
 					if (Calc == "<<")
 					{
-						QInt Result = a << stoi(len, 0, 10);
+						Result = a << stoi(len, 0, 10);
 					}
+					if (Calc == "&" || Calc == "|" || Calc == "^")
+					{
+						bool *temp1 = new bool[128];
+						for (int i = 0; i < 128; i++) temp1[i] = CharToBit(len)[i];
+						QInt b(temp1);
+						if (Calc == "&")
+						{
+							Result = a & b;
+						}
+						else if (Calc == "|")
+						{
+							Result = a | b;
+						}
+						else Result = a^b;
+					}
+					bool*temp = new bool[128];
+					for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
+					for (int i = 0; i < 128; i++) Final.push_back(temp[i] + '0');
+					Final.erase(0, Final.find('1'));
+					Out << Final << endl;
+				}
+				if (n == "16")
+				{
+					bool*temp = new bool[128];
+					for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
+					QInt a(temp),Result;
+					if (Calc == ">>")
+					{
+						Result = a >> stoi(len, 0, 10);
+					}
+					if (Calc == "<<")
+					{
+						Result = a << stoi(len, 0, 10);
+					}
+					if (Calc == "&" || Calc == "|" || Calc == "^")
+					{
+						bool *temp1 = new bool[128];
+						for (int i = 0; i < 128; i++) temp1[i] = CharToBit(len)[i];
+						QInt b(temp1);
+						if (Calc == "&")
+						{
+							Result = a & b;
+						}
+						else if (Calc == "|")
+						{
+							Result = a | b;
+						}
+						else Result = a^b;
+					}
+					Final = DecToHex(Result);
+					Out << Final << endl;
 				}
 			}
 		}
