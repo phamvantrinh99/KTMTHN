@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -75,3 +76,18 @@ string StrDivTwo(const string &Str);
 
 //Chuyển chuỗi số nguyên string x sang chuỗi nhị phân kiểu bool
 bool* CharToBit(string x);
+
+//Hàm tính a lũy thừa n (a, n là số nguyên không âm).
+string Power(int a, int n);
+
+//Hàm nhân hai chuỗi.
+string MultiplyNumberString(string a, string b);
+
+//Hàm cộng hai chuỗi số.
+string AddNumberString(string a, string b);
+
+//Hàm trừ hai chuỗi số dương.
+string SubNumberString(string a, string b);
+
+
+string QInttoDecString(const QInt &x);
