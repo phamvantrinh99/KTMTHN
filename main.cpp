@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 					if (p1 == "10") // xử lí bit ở cơ số 10
 					{
 						bool *temp = new bool[128];
-						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p1)[i];
+						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p2)[i];
 						QInt a(temp);
 						Result = ~a;
 						Final = QInttoDecString(Result);
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
 					}
 					if (p1 == "2") // xử lí bit ở cơ số 2
 					{
-						QInt a(str);
+						QInt a(p2);
 						Result = ~a;
 						bool*temp = new bool[128];
 						for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 					if (p1 == "16")
 					{
 						bool*temp = new bool[128];
-						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
+						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(p2)[i];
 						QInt a(temp);
 						Result = ~a;
 						Final = DecToHex(Result);
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
 					if (p1 == "10") // xử lí bit ở cơ số 10
 					{
 						bool *temp = new bool[128];
-						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p1)[i];
+						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p2)[i];
 						QInt a(temp);
 						Result = a.RoL();
 						Final = QInttoDecString(Result);
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 					}
 					if (p1 == "2") // xử lí bit ở cơ số 2
 					{
-						QInt a(str);
+						QInt a(p2);
 						Result = a.RoL();
 						bool*temp = new bool[128];
 						for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
 					if (p1 == "16")
 					{
 						bool*temp = new bool[128];
-						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
+						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(p2)[i];
 						QInt a(temp);
 						Result = a.RoL();
 						Final = DecToHex(Result);
@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
 					if (p1 == "10") // xử lí bit ở cơ số 10
 					{
 						bool *temp = new bool[128];
-						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p1)[i];
+						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p2)[i];
 						QInt a(temp);
 						Result = a.RoR();
 						Final = QInttoDecString(Result);
@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
 					}
 					if (p1 == "2") // xử lí bit ở cơ số 2
 					{
-						QInt a(str);
+						QInt a(p2);
 						Result = a.RoR();
 						bool*temp = new bool[128];
 						for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
 					if (p1 == "16")
 					{
 						bool*temp = new bool[128];
-						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
+						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(p2)[i];
 						QInt a(temp);
 						Result = a.RoR();
 						Final = DecToHex(Result);
