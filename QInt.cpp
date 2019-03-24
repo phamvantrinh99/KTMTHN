@@ -807,7 +807,7 @@ string SubNumberString(string a, string b)
 	return a;
 }
 
-
+//Hàm chuyển từ QInt sang chuỗi string hệ 10
 string QInttoDecString(const QInt &x)
 {
 	bool* Binary = DecToBin(x);
@@ -821,4 +821,124 @@ string QInttoDecString(const QInt &x)
 		}
 	}
 	return Decimal;
+}
+
+//Hàm chuyển chuỗi thập lục phân sang nhị phân.
+bool* StrHextoBin(string Str)
+{
+	bool* Binary = new bool[128];
+	memset(Binary, 0, 128);
+	int index = 127;
+
+	for (int i = Str.size() - 1; i >= 0; i--)
+	{
+		switch (Str[i])
+		{
+		case '0':
+		{
+			break;
+		}
+		case '1':
+		{
+			Binary[index] = 1;
+			break;
+		}
+		case '2':
+		{
+			Binary[index - 1] = 1;
+			break;
+		}
+		case '3':
+		{
+			Binary[index] = 1;
+			Binary[index - 1] = 1;
+			break;
+		}
+		case '4':
+		{
+			Binary[index - 2] = 1;
+			break;
+		}
+		case '5':
+		{
+			Binary[index] = 1;
+			Binary[index - 2] = 1;
+			break;
+		}
+		case '6':
+		{
+			Binary[index - 1] = 1;
+			Binary[index - 2] = 1;
+			break;
+		}
+		case '7':
+		{
+			Binary[index] = 1;
+			Binary[index - 1] = 1;
+			Binary[index - 2] = 1;
+			break;
+		}
+		case '8':
+		{
+			Binary[index - 3] = 1;
+			break;
+		}
+		case '9':
+		{
+			Binary[index] = 1;
+			Binary[index - 3] = 1;
+			break;
+		}
+		case 'A':
+		case 'a':
+		{
+			Binary[index - 1] = 1;
+			Binary[index - 3] = 1;
+			break;
+		}
+		case 'B':
+		case 'b':
+		{
+			Binary[index] = 1;
+			Binary[index - 1] = 1;
+			Binary[index - 3] = 1;
+			break;
+		}
+		case 'C':
+		case 'c':
+		{
+			Binary[index - 2] = 1;
+			Binary[index - 3] = 1;
+			break;
+		}
+		case 'D':
+		case 'd':
+		{
+			Binary[index] = 1;
+			Binary[index - 2] = 1;
+			Binary[index - 3] = 1;
+			break;
+		}
+		case 'E':
+		case 'e':
+		{
+			Binary[index - 1] = 1;
+			Binary[index - 2] = 1;
+			Binary[index - 3] = 1;
+			break;
+		}
+		case 'F':
+		case 'f':
+		{
+			Binary[index] = 1;
+			Binary[index - 1] = 1;
+			Binary[index - 2] = 1;
+			Binary[index - 3] = 1;
+			break;
+		}
+		}
+		index -= 4;
+	}
+
+	return Binary;
 }
