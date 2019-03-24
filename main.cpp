@@ -140,11 +140,18 @@ int main(int argc, char *argv[])
 						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p1)[i];
 						QInt a(temp);
 						Result = ~a;
+						Final = QInttoDecString(Result);
+						Out << Final << endl;
 					}
 					if (p1 == "2") // xử lí bit ở cơ số 2
 					{
 						QInt a(str);
 						Result = ~a;
+						bool*temp = new bool[128];
+						for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
+						for (int i = 0; i < 128; i++) Final.push_back(temp[i] + '0');
+						Final.erase(0, Final.find('1'));
+						Out << Final << endl;
 					}
 					if (p1 == "16")
 					{
@@ -152,6 +159,8 @@ int main(int argc, char *argv[])
 						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
 						QInt a(temp);
 						Result = ~a;
+						Final = DecToHex(Result);
+						Out << Final << endl;
 					}
 				}
 				if (str == "RoL")
@@ -162,19 +171,28 @@ int main(int argc, char *argv[])
 						bool *temp = new bool[128];
 						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p1)[i];
 						QInt a(temp);
-						Result = ~a;
+						Result = a.RoL();
+						Final = QInttoDecString(Result);
+						Out << Final << endl;
 					}
 					if (p1 == "2") // xử lí bit ở cơ số 2
 					{
 						QInt a(str);
-						Result = ~a;
+						Result = a.RoL();
+						bool*temp = new bool[128];
+						for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
+						for (int i = 0; i < 128; i++) Final.push_back(temp[i] + '0');
+						Final.erase(0, Final.find('1'));
+						Out << Final << endl;
 					}
 					if (p1 == "16")
 					{
 						bool*temp = new bool[128];
 						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
 						QInt a(temp);
-						Result = ~a;
+						Result = a.RoL();
+						Final = DecToHex(Result);
+						Out << Final << endl;
 					}
 				}
 				if (str == "RoR")
@@ -185,19 +203,28 @@ int main(int argc, char *argv[])
 						bool *temp = new bool[128];
 						for (int i = 0; i < 128; i++) temp[i] = CharToBit(p1)[i];
 						QInt a(temp);
-						Result = ~a;
+						Result = a.RoR();
+						Final = QInttoDecString(Result);
+						Out << Final << endl;
 					}
 					if (p1 == "2") // xử lí bit ở cơ số 2
 					{
 						QInt a(str);
-						Result = ~a;
+						Result = a.RoR();
+						bool*temp = new bool[128];
+						for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
+						for (int i = 0; i < 128; i++) Final.push_back(temp[i] + '0');
+						Final.erase(0, Final.find('1'));
+						Out << Final << endl;
 					}
 					if (p1 == "16")
 					{
 						bool*temp = new bool[128];
 						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
 						QInt a(temp);
-						Result = ~a;
+						Result = a.RoR();
+						Final = DecToHex(Result);
+						Out << Final << endl;
 					}
 				}
 			}
