@@ -46,7 +46,7 @@ unsigned int* QInt::getData() const
 // toan tu *
 QInt QInt::operator * (QInt x) const
 {
-	QInt Result;
+	QInt Result("0");
 
 	QInt Temp = *this;
 
@@ -70,14 +70,12 @@ QInt QInt::operator * (QInt x) const
 	{
 		if (((x & One) - One).isEqualZero()) //x le thi cong ket qua voi Temp
 		{
-
 			Result = Result + Temp;
 		}
 
 		Temp = Temp << 1; //nhan temp cho 2;
 		x = x >> 1; //chia x cho 2.
 	}
-
 	// neu 2 so trai dau
 	if (Negative == true)
 	{
@@ -89,7 +87,7 @@ QInt QInt::operator * (QInt x) const
 // toan tu /
 QInt QInt::operator / (QInt x)
 {
-	QInt Result;
+	QInt Result("0");
 
 	if (this->isEqualZero() || x.isEqualZero()) // kiem tra kq va x co bang 0 khong
 	{
