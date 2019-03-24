@@ -89,5 +89,8 @@ string AddNumberString(string a, string b);
 //Hàm trừ hai chuỗi số dương.
 string SubNumberString(string a, string b);
 
-
+//Hàm chuyển từ QInt sang chuỗi string hệ 10
 string QInttoDecString(const QInt &x);
+
+//Hàm chuyển chuỗi thập lục phân sang nhị phân.
+bool* StrHextoBin(string Str);
