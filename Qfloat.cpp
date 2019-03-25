@@ -114,7 +114,7 @@ bool* DecToBin15Bit(unsigned long long int Data15Bit, int &size, bool want) //ha
 			}
 		}
 		int temp = 14;
-		for (int j = 0; j <15; j++)
+		for (int j = 0; j < 15; j++)
 		{
 			Res[temp] = binaryNum[j];
 			temp--;
@@ -289,7 +289,7 @@ bool* StrDecToBin(string Dec)
 		run++;
 	}
 	//doi res lai do code nguoc
-	bool* tempRev=new bool[128];
+	bool* tempRev = new bool[128];
 	int runRev = 127;
 	for (int i = 0; i < 128; i++)
 	{
@@ -317,34 +317,56 @@ bool* DecToBin(QFloat x)
 }
 
 //Hàm chuyển từ QFloat sang string hệ 10
-string QFloatToDecStr(QFloat x) {
-	string kq;
+string QFloatToDecStr(QFloat x)
+{
 	bool* Data = DecToBin(x);
-	int x15bit=0, e;
-	float x112bit=0, m;
-
+	int x15bit = 0, e;
+	long double x112bit = 0, m;
+	unsigned long long int phanNguyen = 0;
+	float phanFrac = 0;
 	bool negative = false;
 	if (Data[0] != 0)
 		negative = true;
-	for (int i = 1; i <= 15; i++) {
-		x15bit += Data[i] * pow(2.0, 15 - i);
+	for (int i = 1; i <= 15; i++)
+	{
+		x15bit = x15bit + Data[i] * pow(2.0, 15 - i);
 	}
-	e = x15bit - 127;
+	e = x15bit - 16383; // so bit dich;
+	int oBitDichToi = 16 + e;
+	phanNguyen = phanNguyen + pow(2.0, e);
+	e--;
+	for (int i = 16; i < oBitDichToi; i++) // toi o bit 18
+	{
+		phanNguyen = phanNguyen + Data[i] * pow(2.0, e);
+		e--;
+	}
+	int run = -1; //so mu cua Frac
+	for (int i = oBitDichToi; i < 128; i++)
+	{
+		phanFrac = phanFrac + Data[i] * pow(2.0, run);
+		run--;
+	}
 
-	for (int i = 16; i <= 128; i++) {
-		x112bit += (float)Data[i] * pow(2.0, 15 - i);
+	string strNguyen, strFrac;
+	string ketQua;
+	strNguyen = to_string(phanNguyen);
+	strFrac = to_string(phanFrac);
+	if (strFrac[0] == '0')
+	{
+		strFrac.erase(strFrac.begin());
 	}
-	while (1) {
-		if (x112bit < 1.0)
-			break;
-		x112bit = x112bit / 10;
+	if (negative == true)
+	{
+		strNguyen.insert(0, "-");
 	}
-	m = x112bit + 1;
+	ketQua = strNguyen + strFrac;
+	int bitCuoi = ketQua.length() - 1;
+	while (ketQua[bitCuoi] == '0')
+	{
+		ketQua.pop_back();
+		bitCuoi--;
+	}
+	return ketQua;
 
-	kq = to_string(m);
-	if (negative == true) {
-		kq.insert(0, "-");
-	}
-	return kq;
 
 }
