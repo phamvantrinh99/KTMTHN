@@ -87,7 +87,7 @@ QInt QInt::operator * (QInt x) const
 // toan tu /
 QInt QInt::operator / (QInt x)
 {
-	QInt Result("0");
+	QInt Result;
 
 	if (this->isEqualZero() || x.isEqualZero()) // kiem tra kq va x co bang 0 khong
 	{
@@ -124,7 +124,7 @@ QInt QInt::operator / (QInt x)
 			while (k > 0)
 			{
 				Result = Result << 1;
-				Result.Data[0] = Result.Data[0] | ((Temp.Data[3] & (1 << 31)) >> 31);
+				Result.Data[0] = Result.Data[0] | ((Temp.Data[3] & (1 << (31))) >> (31));
 				Temp = Temp << 1;
 
 				Result = Result - x;
@@ -174,6 +174,18 @@ QInt QInt::operator + (QInt x) const
 QInt QInt::operator - (QInt x) const
 {
 	return (*this + x.QInttoTwosComplement());
+}
+//Toán tử ==
+bool QInt::operator == (QInt x) const
+{
+	for (int i = 0; i < 4; i++)
+		if (Data[i] != x.Data[i])	return false;
+	return true;
+}
+//Toán tử !=
+bool QInt::operator != (QInt x) const
+{
+	return !(this->operator==(x));
 }
 //Toán tử gán =.
 QInt& QInt::operator = (const QInt&x)
@@ -326,6 +338,22 @@ bool QInt::isNegative() const
 	}
 
 	return false;
+}
+
+//Hàm Nhập
+void ScanQInt(QInt &x)
+{ 
+	string Dec;
+	cin.ignore();
+	getline(cin, Dec);
+	QInt result(StrQIntDecToBin(Dec));
+	x = result;
+}
+
+//Hàm xuất 
+void PrintQInt(QInt x)
+{
+	cout << QInttoDecString(x);
 }
 
 //Hàm chuyển đổi số QInt nhị phân sang thập lục phân
@@ -553,7 +581,7 @@ string StrDivTwo(const string &Str)
 }
 
 //Chuyển chuỗi số nguyên he 10 string x sang chuỗi nhị phân kiểu bool
-bool* CharToBit(string x)
+bool* StrQIntDecToBin(string x)
 {
 	bool Negative = false;
 	bool *Result = new bool[128];
@@ -579,7 +607,6 @@ bool* CharToBit(string x)
 	}
 	return Result;
 }
-
 
 //Hàm tính a lũy thừa n (a, n là số nguyên không âm).
 string Power(int a, int n)
