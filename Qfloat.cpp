@@ -1,10 +1,11 @@
-﻿#include "QFloat.h"
+#include "QFloat.h"
 
-
+//Khởi tạo mặc định
 QFloat::QFloat()
 {
 }
 
+//Khởi tạo với chuỗi string cơ số 2
 QFloat::QFloat(string Binary)
 {
 	memset(this->Data, 0, 16);
@@ -17,6 +18,20 @@ QFloat::QFloat(string Binary)
 	}
 }
 
+//Khởi tạo với một mảng bit
+QFloat::QFloat(bool* Binary)
+{
+	memset(this->Data, 0, 16);
+	for (size_t i = 0; i < 128; i++)
+	{
+		if (Binary[i] == 1)
+		{
+			this->Data[i / 32] = this->Data[i / 32] | ((1 << ((127 - i) % 32)));
+		}
+	}
+}
+
+//Hàm lấy dữ liệu
 unsigned int* QFloat::getData()
 {
 	unsigned int* Result = new unsigned int[4];
@@ -25,50 +40,27 @@ unsigned int* QFloat::getData()
 	return Result;
 }
 
-////Chia số nguyên string Str cho 2 lấy phần nguyên
-//string StrDivTwo(const string &Str)
-//{
-//	string Result;
-//	int Temp = 0;
-//
-//	for (int i = 0; i < Str.size(); i++)
-//	{
-//		Temp = Temp * 10 + (Str[i] - '0');
-//
-//		if (i > 0 || (i == 0 && Temp >= 2))
-//		{
-//			Result.push_back((Temp / 2) + '0');
-//		}
-//
-//		Temp = Temp % 2;
-//	}
-//
-//	return Result;
-//}
-//
-////Chuyển số thực Dec dạng string qua bool* nhị phân theo dạng   ±1.F * 2^E
-//bool* StrDecToBin(string Dec)
-//{
-//	bool result[128];
-//	if (Dec[0] == '-')
-//	{
-//		Dec.erase(Dec.begin());
-//		result[0] = 1;
-//	}
-//	else
-//		result[0] = 0;
-//	bool Nguyen[128];
-//	int k = 127;
-//	while (Dec != "")
-//	{
-//		result[k] = (Dec[Dec.size() - 1] - '0') % 2;
-//		Dec = StrDivTwo(Dec);
-//		k--;
-//	}
-//
-//}
+//Hàm set dữ liệu
+void QFloat::setData(int viTrim, unsigned int Data)
+{
+	this->Data[viTrim] = Data;
+}
 
+//Hàm Nhập
+void ScanQfloat(QFloat &x)
+{
+	string Dec;
+	QFloat result(StrDecToBin(Dec));
+	x = result;
+}
 
+//Hàm xuất
+void PrintQfloat(QFloat x)
+{
+	cout << QFloatToDecStr(x);
+}
+
+//Hàm bổ trợ cho StrDecToBin
 bool* DecToBin15Bit(unsigned long long int Data15Bit, int &size, bool want) //ham chuyen dec to bin max la 15 bit
 {
 	string temp;
@@ -129,8 +121,9 @@ bool* DecToBin15Bit(unsigned long long int Data15Bit, int &size, bool want) //ha
 		}
 		return Res;
 	}
-};
+}
 
+//Hàm bổ trợ cho StrDecToBin
 unsigned long long int NguyenSangSo(string x)
 {
 	int l1 = x.length();
@@ -141,6 +134,8 @@ unsigned long long int NguyenSangSo(string x)
 	}
 	return num1;
 }
+
+//Chuyển số thực Dec dạng string qua bool* nhị phân theo dạng   ±1.F * 2^E
 bool* StrDecToBin(string Dec)
 {
 	bool res[128];
@@ -160,17 +155,40 @@ bool* StrDecToBin(string Dec)
 	string tempRes15Bit;
 	string tempFrac;
 	int size = 0;
+	bool ktCoPhanFrac = false;
+	for (int i = 0; i < Dec.length(); i++)
+	{
+		if (Dec[i] == '.')
+		{
+			ktCoPhanFrac = true;
+			break;
+		}
+	}
 	int run = 0;
-	while (tempDec[run] != '.')
+	if (ktCoPhanFrac == false)
 	{
-		tempRes15Bit.push_back(tempDec[run]);
-		run++;
+		while (tempDec[run] != '\0')
+		{
+			tempRes15Bit.push_back(tempDec[run]);
+			run++;
+		}
+		tempFrac.push_back('.');
+		tempFrac.push_back('0');
 	}
-	while (tempDec[run] != '\0')
+	else
 	{
-		tempFrac.push_back(tempDec[run]);
-		run++;
+		while (tempDec[run] != '.')
+		{
+			tempRes15Bit.push_back(tempDec[run]);
+			run++;
+		}
+		while (tempDec[run] != '\0')
+		{
+			tempFrac.push_back(tempDec[run]);
+			run++;
+		}
 	}
+
 	if (tempFrac[0] == '.') //kiem tra coi co dau cham dau chuoi khong neu co thi xoa
 	{
 		tempFrac.erase(tempFrac.begin());
@@ -270,16 +288,23 @@ bool* StrDecToBin(string Dec)
 		else res[i] = false;
 		run++;
 	}
-
-	return res;
+	//doi res lai do code nguoc
+	bool* tempRev=new bool[128];
+	int runRev = 127;
+	for (int i = 0; i < 128; i++)
+	{
+		tempRev[runRev] = res[i];
+		runRev--;
+	}
+	return tempRev;
 }
 
-////Chuyển đổi số Qfloat nhị phân sang thập phân: 
-//QFloat QFloat::BinToDec(bool *bit)
-//{
-//
-//}
-//
+//Chuyển đổi số Qfloat nhị phân sang thập phân: 
+QFloat BinToDec(bool *Binary)
+{
+	return QFloat(Binary);
+}
+
 //Hàm chuyển đổi số Qfloat thập phân sang nhị phân :
 bool* DecToBin(QFloat x)
 {
@@ -289,4 +314,37 @@ bool* DecToBin(QFloat x)
 		res[i] = (x.getData()[3 - (127 - i) / 32] & (1 << ((127 - i) % 32))) >> ((127 - i) % 32);
 	}
 	return res;
+}
+
+//Hàm chuyển từ QFloat sang string hệ 10
+string QFloatToDecStr(QFloat x) {
+	string kq;
+	bool* Data = DecToBin(x);
+	int x15bit=0, e;
+	float x112bit=0, m;
+
+	bool negative = false;
+	if (Data[0] != 0)
+		negative = true;
+	for (int i = 1; i <= 15; i++) {
+		x15bit += Data[i] * pow(2.0, 15 - i);
+	}
+	e = x15bit - 127;
+
+	for (int i = 16; i <= 128; i++) {
+		x112bit += (float)Data[i] * pow(2.0, 15 - i);
+	}
+	while (1) {
+		if (x112bit < 1.0)
+			break;
+		x112bit = x112bit / 10;
+	}
+	m = x112bit + 1;
+
+	kq = to_string(m);
+	if (negative == true) {
+		kq.insert(0, "-");
+	}
+	return kq;
+
 }
