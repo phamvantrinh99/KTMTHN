@@ -26,11 +26,21 @@ public:
 	// toan tu *
 	QInt operator * (QInt x) const;
 	// toan tu /
-	QInt QInt::operator / (QInt x);
+	QInt QInt::operator / (QInt x) const;
 	//Toán tử +
 	QInt operator + (QInt x) const;
 	//toan tu -.
 	QInt operator - (QInt x) const;
+
+	//---------------------------------NHÓM CÁC TOÁN TỬ SO SÁNH VÀ GÁN -----------------------------------
+	//Toán tử <.
+	bool  QInt::operator < (QInt x);
+	//Toán tử >.
+	bool  QInt::operator > (QInt x);
+	//Toán tử >=.
+	bool  QInt::operator >= (QInt x);
+	//Toán tử <=
+	bool  QInt::operator <= (QInt x);
 	//Toán tử ==
 	bool operator == (QInt x) const;
 	//Toán tử !=
