@@ -372,5 +372,6 @@ int main(int argc, char *argv[])
 	}
 	Inp.close();
 	Out.close();
+	cout << "Thanh cong.\n";
 	return 0;
 }
