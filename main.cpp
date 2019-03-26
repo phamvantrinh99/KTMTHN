@@ -285,9 +285,7 @@ int main(int argc, char *argv[])
 							}
 							if (Calc == "&" || Calc == "|" || Calc == "^")
 							{
-								bool *temp1 = new bool[128];
-								for (int i = 0; i < 128; i++) temp1[i] = StrQIntDecToBin(len)[i];
-								QInt b(temp1);
+								QInt b(len);
 								if (Calc == "&")
 								{
 									Result = a & b;
@@ -320,7 +318,7 @@ int main(int argc, char *argv[])
 							if (Calc == "&" || Calc == "|" || Calc == "^")
 							{
 								bool *temp1 = new bool[128];
-								for (int i = 0; i < 128; i++) temp1[i] = StrQIntDecToBin(len)[i];
+								for (int i = 0; i < 128; i++) temp1[i] = StrHextoBin(len)[i];
 								QInt b(temp1);
 								if (Calc == "&")
 								{
