@@ -3,6 +3,27 @@
 #include <fstream>
 int main(int argc, char *argv[])
 {
+	if (argc == 1)
+	{
+		ofstream Out;
+		string fileout;
+		cout << "Nhap ten file input de luu de lieu: ";
+		getline(cin, fileout);
+		Out.open(fileout);
+		cout << "NHAP DU LIEU INPUT ( Nhap \"exit\" de ket thuc):\n" << endl;
+		string s;
+		do
+		{
+			fflush(stdin);
+			getline(cin, s);
+			if (s != "exit")
+			{
+				Out << s << endl;
+			}
+		} while (s != "exit");
+		Out.close();
+		return 1;
+	}
 	ifstream Inp;
 	ofstream Out;
 	Inp.open(argv[1]);
@@ -35,18 +56,15 @@ int main(int argc, char *argv[])
 					if (Calc == "*")  Result = a * b;
 					if (Calc == "/")  Result = a / b;
 					//---------------------Xử lí xuất file
-					bool*temp = new bool[128];
-					for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
+					bool*temp = DecToBin(Result);
 					for (int i = 0; i < 128; i++) Final.push_back(temp[i] + '0');
 					Final.erase(0, Final.find('1'));
 					Out << Final << endl;
 				}
 				if (n == "10")  // thực hiện tính toán, xử lý ở chế độ Decimal
 				{
-					bool *temp1 = new bool[128];
-					for (int i = 0; i < 128; i++) temp1[i] = StrQIntDecToBin(s1)[i];
-					bool *temp2 = new bool[128];
-					for (int i = 0; i < 128; i++) temp1[i] = StrQIntDecToBin(s2)[i];
+					bool *temp1 = StrQIntDecToBin(s1);
+					bool *temp2 = StrQIntDecToBin(s2);
 					QInt a(temp1);
 					QInt b(temp2);
 					if (Calc == "+")  Result = a + b;
@@ -58,10 +76,8 @@ int main(int argc, char *argv[])
 				}
 				if (n == "16") // thực hiện tính toán, xử lý ở chế độ Hexa
 				{
-					bool *temp1 = new bool[128];
-					for (int i = 0; i < 128; i++) temp1[i] = StrHextoBin(s1)[i];
-					bool *temp2 = new bool[128];
-					for (int i = 0; i < 128; i++) temp2[i] = StrHextoBin(s2)[i];
+					bool *temp1 = StrHextoBin(s1);
+					bool *temp2 = StrHextoBin(s2);
 					QInt a(temp1);
 					QInt b(temp2);
 					if (Calc == "+")  Result = a + b;
@@ -100,13 +116,10 @@ int main(int argc, char *argv[])
 					}
 					if (p1 == "10" && (str != "~" || str != "RoL" || str != "RoR"))
 					{
-						bool *temp = new bool[128];
-						for (int i = 0; i < 128; i++) temp[i] = StrQIntDecToBin(str)[i];
-						QInt Result(temp);
+						QInt Result(StrQIntDecToBin(str));
 						if (p2 == "2") //thao tác xử lí chuyển đổi cơ số từ 10 -> 2
 						{
-							bool*temp = new bool[128];
-							for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
+							bool*temp = DecToBin(Result);
 							for (int i = 0; i < 128; i++) Final.push_back(temp[i] + '0');
 							Final.erase(0, Final.find('1'));
 							Out << Final << endl;
@@ -119,8 +132,7 @@ int main(int argc, char *argv[])
 					}
 					if (p1 == "16" && (str != "~" || str != "RoL" || str != "RoR"))
 					{
-						bool*temp = new bool[128];
-						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
+						bool*temp = StrHextoBin(str);
 						QInt Result(str);
 						if (p2 == "2") //thao tác xử lí chuyển đổi cơ số từ 16 -> 2
 						{
@@ -139,8 +151,7 @@ int main(int argc, char *argv[])
 						QInt Result;
 						if (p1 == "10") // xử lí bit ở cơ số 10
 						{
-							bool *temp = new bool[128];
-							for (int i = 0; i < 128; i++) temp[i] = StrQIntDecToBin(p2)[i];
+							bool *temp = StrQIntDecToBin(p2);
 							QInt a(temp);
 							Result = ~a;
 							Final = QInttoDecString(Result);
@@ -150,16 +161,14 @@ int main(int argc, char *argv[])
 						{
 							QInt a(p2);
 							Result = ~a;
-							bool*temp = new bool[128];
-							for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
+							bool*temp = DecToBin(Result);
 							for (int i = 0; i < 128; i++) Final.push_back(temp[i] + '0');
 							Final.erase(0, Final.find('1'));
 							Out << Final << endl;
 						}
 						if (p1 == "16")
 						{
-							bool*temp = new bool[128];
-							for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(p2)[i];
+							bool*temp = StrHextoBin(p2);
 							QInt a(temp);
 							Result = ~a;
 							Final = DecToHex(Result);
@@ -171,8 +180,7 @@ int main(int argc, char *argv[])
 						QInt Result;
 						if (p1 == "10") // xử lí bit ở cơ số 10
 						{
-							bool *temp = new bool[128];
-							for (int i = 0; i < 128; i++) temp[i] = StrQIntDecToBin(p2)[i];
+							bool *temp = StrQIntDecToBin(p2);
 							QInt a(temp);
 							Result = a.RoL();
 							Final = QInttoDecString(Result);
@@ -182,16 +190,14 @@ int main(int argc, char *argv[])
 						{
 							QInt a(p2);
 							Result = a.RoL();
-							bool*temp = new bool[128];
-							for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
+							bool*temp = DecToBin(Result);
 							for (int i = 0; i < 128; i++) Final.push_back(temp[i] + '0');
 							Final.erase(0, Final.find('1'));
 							Out << Final << endl;
 						}
 						if (p1 == "16")
 						{
-							bool*temp = new bool[128];
-							for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(p2)[i];
+							bool*temp = StrHextoBin(p2);
 							QInt a(temp);
 							Result = a.RoL();
 							Final = DecToHex(Result);
@@ -203,8 +209,7 @@ int main(int argc, char *argv[])
 						QInt Result;
 						if (p1 == "10") // xử lí bit ở cơ số 10
 						{
-							bool *temp = new bool[128];
-							for (int i = 0; i < 128; i++) temp[i] = StrQIntDecToBin(p2)[i];
+							bool *temp = StrQIntDecToBin(p2);
 							QInt a(temp);
 							Result = a.RoR();
 							Final = QInttoDecString(Result);
@@ -214,16 +219,14 @@ int main(int argc, char *argv[])
 						{
 							QInt a(p2);
 							Result = a.RoR();
-							bool*temp = new bool[128];
-							for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
+							bool*temp = DecToBin(Result);
 							for (int i = 0; i < 128; i++) Final.push_back(temp[i] + '0');
 							Final.erase(0, Final.find('1'));
 							Out << Final << endl;
 						}
 						if (p1 == "16")
 						{
-							bool*temp = new bool[128];
-							for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(p2)[i];
+							bool*temp = StrHextoBin(p2);
 							QInt a(temp);
 							Result = a.RoR();
 							Final = DecToHex(Result);
@@ -242,8 +245,7 @@ int main(int argc, char *argv[])
 					string len = s.substr(0, s.length());
 					if (n == "10") // xử lí bit ở cơ số 10
 					{
-						bool *temp = new bool[128];
-						for (int i = 0; i < 128; i++) temp[i] = StrQIntDecToBin(str)[i];
+						bool *temp = StrQIntDecToBin(str);
 						QInt a(temp), Result;
 						if (Calc == ">>")
 						{
@@ -255,8 +257,7 @@ int main(int argc, char *argv[])
 						}
 						if (Calc == "&" || Calc == "|" || Calc == "^")
 						{
-							bool *temp1 = new bool[128];
-							for (int i = 0; i < 128; i++) temp1[i] = StrQIntDecToBin(len)[i];
+							bool *temp1 = StrQIntDecToBin(len);
 							QInt b(temp1);
 							if (Calc == "&")
 							{
@@ -285,8 +286,7 @@ int main(int argc, char *argv[])
 						}
 						if (Calc == "&" || Calc == "|" || Calc == "^")
 						{
-							bool *temp1 = new bool[128];
-							for (int i = 0; i < 128; i++) temp1[i] = StrQIntDecToBin(len)[i];
+							bool *temp1 = StrQIntDecToBin(len);
 							QInt b(temp1);
 							if (Calc == "&")
 							{
@@ -298,16 +298,14 @@ int main(int argc, char *argv[])
 							}
 							else Result = a^b;
 						}
-						bool*temp = new bool[128];
-						for (int i = 0; i < 128; i++) temp[i] = DecToBin(Result)[i];
+						bool*temp = DecToBin(Result);
 						for (int i = 0; i < 128; i++) Final.push_back(temp[i] + '0');
 						Final.erase(0, Final.find('1'));
 						Out << Final << endl;
 					}
 					if (n == "16")
 					{
-						bool*temp = new bool[128];
-						for (int i = 0; i < 128; i++) temp[i] = StrHextoBin(str)[i];
+						bool*temp = StrHextoBin(str);
 						QInt a(temp), Result;
 						if (Calc == ">>")
 						{
@@ -319,8 +317,7 @@ int main(int argc, char *argv[])
 						}
 						if (Calc == "&" || Calc == "|" || Calc == "^")
 						{
-							bool *temp1 = new bool[128];
-							for (int i = 0; i < 128; i++) temp1[i] = StrQIntDecToBin(len)[i];
+							bool *temp1 = StrQIntDecToBin(len);
 							QInt b(temp1);
 							if (Calc == "&")
 							{
@@ -359,13 +356,17 @@ int main(int argc, char *argv[])
 			}
 			if (p1 == "10")
 			{
-				bool* temp = new bool[128];
-				for (int i = 0; i < 128; i++) temp[i] = StrDecToBin(str)[i];
+				bool* temp = StrDecToBin(str);
 				QFloat Result(temp);
-				bool*temp1 = new bool[128];
-				for (int i = 0; i < 128; i++) temp1[i] = DecToBin(Result)[i];
+				bool*temp1 = DecToBin(Result);
 				for (int i = 0; i < 128; i++) Final.push_back(temp1[i] + '0');
-				Out << Final << endl;
+				reverse(Final.begin(), Final.end());
+				Final.erase(0, Final.find('1'));
+				reverse(Final.begin(), Final.end());
+				if (Final == "\0")
+					Out << '0' << endl;
+				else
+					Out << Final << endl;
 			}
 		}
 	}
