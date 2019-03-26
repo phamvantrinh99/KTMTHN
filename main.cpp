@@ -341,34 +341,36 @@ int main(int argc, char *argv[])
 		}
 		else if (strcmp(argv[3],"QFloat")==0)
 		{
-		while (!Inp.eof())
-		{
-		string s;
-		getline(Inp, s);
-		string Final;
-		string p1 = s.substr(0, s.find(' '));
-		s.erase(0, s.find(' ') + 1);
-		string p2 = s.substr(0, s.find(' '));
-		s.erase(0, s.find(' ') + 1);
-		string str = s.substr(0, s.length());
-		if (p1 == "2")
-		{
-		QFloat x(str);
-		Final = QFloatToDecStr(x);
-		Out << Final << endl;
-		}
-		if (p1 == "10")
-		{
-		bool* temp = new bool[128];
-		for (int i = 0; i < 128; i++) temp[i] = StrDecToBin(str)[i];
-		QFloat Result(temp);
-		bool*temp1 = new bool[128];
-		for (int i = 0; i < 128; i++) temp1[i] = DecToBin(Result)[i];
-		for (int i = 0; i < 128; i++) Final.push_back(temp1[i] + '0');
-		Final.erase(0, Final.find('1'));
-		Out << Final << endl;
-		}
-		}
+			while (!Inp.eof())
+			{
+				string s;
+				getline(Inp, s);
+				string Final;
+				string p1 = s.substr(0, s.find(' '));
+				s.erase(0, s.find(' ') + 1);
+				string p2 = s.substr(0, s.find(' '));
+				s.erase(0, s.find(' ') + 1);
+				string str = s.substr(0, s.length());
+				if (p1 == "2")
+				{
+					QFloat x(str);
+					Final = QFloatToDecStr(x);
+					Out << Final << endl;
+				}
+				if (p1 == "10")
+				{
+					bool* temp = new bool[128];
+					for (int i = 0; i < 128; i++) temp[i] = StrDecToBin(str)[i];
+					QFloat Result(temp);
+					bool*temp1 = new bool[128];
+					for (int i = 0; i < 128; i++) temp1[i] = DecToBin(Result)[i];
+					for (int i = 0; i < 128; i++) Final.push_back(temp1[i] + '0');
+					reverse(Final.begin(), Final.end());
+					Final.erase(0, Final.find('1'));
+					reverse(Final.begin(), Final.end());
+					Out << Final << endl;
+				}
+			}
 		}
 	Inp.close();
 	Out.close();
