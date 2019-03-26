@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 						bool *temp1 = new bool[128];
 						for (int i = 0; i < 128; i++) temp1[i] = StrQIntDecToBin(s1)[i];
 						bool *temp2 = new bool[128];
-						for (int i = 0; i < 128; i++) temp1[i] = StrQIntDecToBin(s2)[i];
+						for (int i = 0; i < 128; i++) temp2[i] = StrQIntDecToBin(s2)[i];
 						QInt a(temp1);
 						QInt b(temp2);
 						if (Calc == "+")  Result = a + b;
