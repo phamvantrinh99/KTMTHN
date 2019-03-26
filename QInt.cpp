@@ -46,7 +46,7 @@ unsigned int* QInt::getData() const
 // toan tu *
 QInt QInt::operator * (QInt x) const
 {
-	QInt Result;
+	QInt Result("0");
 
 	QInt Temp = *this;
 
@@ -70,14 +70,12 @@ QInt QInt::operator * (QInt x) const
 	{
 		if (((x & One) - One).isEqualZero()) //x le thi cong ket qua voi Temp
 		{
-
 			Result = Result + Temp;
 		}
 
 		Temp = Temp << 1; //nhan temp cho 2;
 		x = x >> 1; //chia x cho 2.
 	}
-
 	// neu 2 so trai dau
 	if (Negative == true)
 	{
@@ -86,47 +84,46 @@ QInt QInt::operator * (QInt x) const
 
 	return Result;
 }
-// toan tu /
-QInt QInt::operator / (QInt x)
+//Toán tử /.
+QInt QInt::operator / (QInt x) const
 {
-	QInt Result;
+	QInt Result("0");
 
-	if (this->isEqualZero() || x.isEqualZero()) // kiem tra kq va x co bang 0 khong
+	if (this->isEqualZero() || x.isEqualZero())
 	{
 		return Result;
 	}
 	else
 	{
 		QInt One("1");
-
-		if ((x - One).isEqualZero())
+		if ((x - QInt("1")).isEqualZero())
 		{
 			Result = *this;
 		}
 		else
 		{
 			QInt Temp = *this;
-			int k = 16;
+			int k = 128;
 			bool Negative = false;
 
-			if ((Temp.isNegative() && !x.isNegative()) || (!Temp.isNegative() && x.isNegative()))//neu 2 so trai dau
+			if ((Temp.isNegative() && !x.isNegative()) || (!Temp.isNegative() && x.isNegative()))//Nếu 2 số trái dấu.
 			{
 				Negative = true;
 			}
 
 			if (x.isNegative())
 			{
-				x = ~(x - One); //am thi chuyen ve so duong
+				x = ~(x - One); //Nếu âm thì chuyển về dạng số dương
 			}
 			if (Temp.isNegative())
 			{
-				Temp = ~(Temp - One); //am thi chuyen ve so duong
+				Temp = ~(Temp - One); //Nếu âm thì chuyển về dạng số dương
 			}
 
-			while (k > 0)
+			while (k>0)
 			{
 				Result = Result << 1;
-				Result.Data[0] = Result.Data[0] | ((Temp.Data[3] & (1 << 31)) >> 31);
+				Result.Data[3] = Result.Data[3] | ((Temp.Data[0] & (1 << 31)) >> 31);
 				Temp = Temp << 1;
 
 				Result = Result - x;
@@ -136,11 +133,12 @@ QInt QInt::operator / (QInt x)
 				}
 				else
 				{
-					Temp.Data[0] = Temp.Data[0] | 1;
+					Temp.Data[3] = Temp.Data[3] | 1;
 				}
 
 				--k;
 			}
+
 
 			Result = Temp;
 			if (Negative == true)
@@ -176,6 +174,65 @@ QInt QInt::operator + (QInt x) const
 QInt QInt::operator - (QInt x) const
 {
 	return (*this + x.QInttoTwosComplement());
+}
+
+//---------------------------------NHÓM CÁC TOÁN TỬ SO SÁNH VÀ GÁN -----------------------------------
+//Toán tử <.
+bool  QInt::operator < (QInt x) {
+	if (this->isNegative() && !x.isNegative())
+		return true;
+	if (!this->isNegative() && x.isNegative())
+		return false;
+	if (this->isNegative() && x.isNegative()){
+		QInt One("1");
+		x = ~(x - One); //doi ve so duong
+		*this = ~(*this - One);
+		if (this != &x)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				if (this->Data[i] < x.Data[i])
+					return false;
+			}
+		}
+		return true;
+	}
+
+	if (!this->isNegative() && !x.isNegative()) {
+		if (this != &x)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				if (this->Data[i] > x.Data[i])
+					return false;
+			}
+		}
+		return true;
+	}
+}
+//Toán tử >.
+bool  QInt::operator > (QInt x) {
+	return !(*this <= x);
+}
+//Toán tử >=.
+bool  QInt::operator >= (QInt x) {
+	return (*this > x || *this == x);
+}
+//Toán tử <=
+bool  QInt::operator <= (QInt x) {
+	return !(*this > x);
+}
+//Toán tử ==
+bool QInt::operator == (QInt x) const
+{
+	for (int i = 0; i < 4; i++)
+	if (Data[i] != x.Data[i])	return false;
+	return true;
+}
+//Toán tử !=
+bool QInt::operator != (QInt x) const
+{
+	return !(this->operator==(x));
 }
 //Toán tử gán =.
 QInt& QInt::operator = (const QInt&x)
@@ -328,6 +385,22 @@ bool QInt::isNegative() const
 	}
 
 	return false;
+}
+
+//Hàm Nhập
+void ScanQInt(QInt &x)
+{
+	string Dec;
+	cin.ignore();
+	getline(cin, Dec);
+	QInt result(StrQIntDecToBin(Dec));
+	x = result;
+}
+
+//Hàm xuất 
+void PrintQInt(QInt x)
+{
+	cout << QInttoDecString(x);
 }
 
 //Hàm chuyển đổi số QInt nhị phân sang thập lục phân
@@ -555,7 +628,7 @@ string StrDivTwo(const string &Str)
 }
 
 //Chuyển chuỗi số nguyên he 10 string x sang chuỗi nhị phân kiểu bool
-bool* CharToBit(string x)
+bool* StrQIntDecToBin(string x)
 {
 	bool Negative = false;
 	bool *Result = new bool[128];
@@ -581,7 +654,6 @@ bool* CharToBit(string x)
 	}
 	return Result;
 }
-
 
 //Hàm tính a lũy thừa n (a, n là số nguyên không âm).
 string Power(int a, int n)
@@ -836,105 +908,105 @@ bool* StrHextoBin(string Str)
 		{
 		case '0':
 		{
-			break;
+					break;
 		}
 		case '1':
 		{
-			Binary[index] = 1;
-			break;
+					Binary[index] = 1;
+					break;
 		}
 		case '2':
 		{
-			Binary[index - 1] = 1;
-			break;
+					Binary[index - 1] = 1;
+					break;
 		}
 		case '3':
 		{
-			Binary[index] = 1;
-			Binary[index - 1] = 1;
-			break;
+					Binary[index] = 1;
+					Binary[index - 1] = 1;
+					break;
 		}
 		case '4':
 		{
-			Binary[index - 2] = 1;
-			break;
+					Binary[index - 2] = 1;
+					break;
 		}
 		case '5':
 		{
-			Binary[index] = 1;
-			Binary[index - 2] = 1;
-			break;
+					Binary[index] = 1;
+					Binary[index - 2] = 1;
+					break;
 		}
 		case '6':
 		{
-			Binary[index - 1] = 1;
-			Binary[index - 2] = 1;
-			break;
+					Binary[index - 1] = 1;
+					Binary[index - 2] = 1;
+					break;
 		}
 		case '7':
 		{
-			Binary[index] = 1;
-			Binary[index - 1] = 1;
-			Binary[index - 2] = 1;
-			break;
+					Binary[index] = 1;
+					Binary[index - 1] = 1;
+					Binary[index - 2] = 1;
+					break;
 		}
 		case '8':
 		{
-			Binary[index - 3] = 1;
-			break;
+					Binary[index - 3] = 1;
+					break;
 		}
 		case '9':
 		{
-			Binary[index] = 1;
-			Binary[index - 3] = 1;
-			break;
+					Binary[index] = 1;
+					Binary[index - 3] = 1;
+					break;
 		}
 		case 'A':
 		case 'a':
 		{
-			Binary[index - 1] = 1;
-			Binary[index - 3] = 1;
-			break;
+					Binary[index - 1] = 1;
+					Binary[index - 3] = 1;
+					break;
 		}
 		case 'B':
 		case 'b':
 		{
-			Binary[index] = 1;
-			Binary[index - 1] = 1;
-			Binary[index - 3] = 1;
-			break;
+					Binary[index] = 1;
+					Binary[index - 1] = 1;
+					Binary[index - 3] = 1;
+					break;
 		}
 		case 'C':
 		case 'c':
 		{
-			Binary[index - 2] = 1;
-			Binary[index - 3] = 1;
-			break;
+					Binary[index - 2] = 1;
+					Binary[index - 3] = 1;
+					break;
 		}
 		case 'D':
 		case 'd':
 		{
-			Binary[index] = 1;
-			Binary[index - 2] = 1;
-			Binary[index - 3] = 1;
-			break;
+					Binary[index] = 1;
+					Binary[index - 2] = 1;
+					Binary[index - 3] = 1;
+					break;
 		}
 		case 'E':
 		case 'e':
 		{
-			Binary[index - 1] = 1;
-			Binary[index - 2] = 1;
-			Binary[index - 3] = 1;
-			break;
+					Binary[index - 1] = 1;
+					Binary[index - 2] = 1;
+					Binary[index - 3] = 1;
+					break;
 		}
 		case 'F':
 		case 'f':
 		{
-			Binary[index] = 1;
-			Binary[index - 1] = 1;
-			Binary[index - 2] = 1;
-			Binary[index - 3] = 1;
-			break;
+					Binary[index] = 1;
+					Binary[index - 1] = 1;
+					Binary[index - 2] = 1;
+					Binary[index - 3] = 1;
+					break;
 		}
 		}
 		index -= 4;
