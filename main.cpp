@@ -3,11 +3,30 @@
 #include <fstream>
 int main(int argc, char *argv[])
 {
-	ifstream Inp;
-	ofstream Out;
-	Inp.open(argv[1]);
-	Out.open(argv[2]);
-		if (strcmp(argv[3],"QInt")==0)
+	if (argc == 1)
+	{
+		ofstream Out;
+		Out.open("input.txt");
+		cout << "NHAP DU LIEU INPUT ( Nhap \"exit\" de ket thuc) "<< endl;
+		string s;
+		do
+		{
+			fflush(stdin);
+			getline(cin, s);
+			if (s != "exit")
+			{
+				Out << s << endl;
+			}
+		} while (s != "exit");
+		Out.close();
+	}
+	if (argc == 4)
+	{
+		ifstream Inp;
+		ofstream Out;
+		Inp.open(argv[1]);
+		Out.open(argv[2]);
+		if (strcmp(argv[3], "1") == 0)
 		{
 			while (!Inp.eof())
 			{
@@ -15,7 +34,7 @@ int main(int argc, char *argv[])
 				getline(Inp, s);
 				QInt Result;
 				string Final;
-				if (s.find('+') < s.length() || (s.find('-') < s.length() && s[s.find('-')+1] == ' ' && s[0]!='-') || s.find('*') < s.length() || s.find('/') < s.length()) // Nhận biết toán hạng để thực hiện phép toán số học
+				if (s.find('+') < s.length() || (s.find('-') < s.length() && s[s.find('-', 4) + 1] == ' ') || s.find('*') < s.length() || s.find('/') < s.length()) // Nhận biết toán hạng để thực hiện phép toán số học
 				{
 					//-----------------tách các thành phần p và các toán hạng, toán tử
 					string n = s.substr(0, s.find(' '));
@@ -337,7 +356,7 @@ int main(int argc, char *argv[])
 				}
 			}
 		}
-		else if (strcmp(argv[3],"QFloat")==0)
+		else if (strcmp(argv[3], "2") == 0)
 		{
 			while (!Inp.eof())
 			{
@@ -370,7 +389,8 @@ int main(int argc, char *argv[])
 				}
 			}
 		}
-	Inp.close();
-	Out.close();
+		Inp.close();
+		Out.close();
+	}
 	return 0;
 }
