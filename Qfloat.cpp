@@ -104,6 +104,7 @@ bool* StrFracToBin(string frac)
 {
 	bool* res = new bool[128];
 	memset(res, 0, 128);
+	if (frac == "0") return res;
 	int i = 0;
 	while (!(frac == "1." || i == 128))
 	{
@@ -118,14 +119,15 @@ bool* StrFracToBin(string frac)
 //Chuyển số thực Dec dạng string qua bool* nhị phân theo dạng   ±1.F * 2^E
 bool* StrDecToBin(string Dec)
 {
+	bool* res = new bool[128];
+	memset(res, 0, 128);
+	if (Dec == "0") return res;
 	bool negative = false;
 	if (Dec[0] == '-')
 	{
 		negative = true;
 		Dec.erase(Dec.begin());
 	}
-	bool* res = new bool[128];
-	memset(res, 0, 128);
 	string nguyen;
 	string frac;
 	while (Dec[0] != '.' && Dec[0] != '\0')
