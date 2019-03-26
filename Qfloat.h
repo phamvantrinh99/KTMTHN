@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include <string>
+
+#pragma pack(1)
+
 using namespace std;
 
 class QFloat
@@ -32,11 +35,11 @@ void ScanQfloat(QFloat &x);
 //Hàm xuất
 void PrintQfloat(QFloat x);
 
-//Hàm bổ trợ cho StrDecToBin
-unsigned long long int NguyenSangSo(string x);
+//Nhân số dạng string với 2
+string StrMultiTwo(string Str);
 
-//Hàm bổ trợ cho StrDecToBin
-bool* DecToBin15Bit(unsigned long long int Data15Bit, int &size, bool want);
+//Chuyển dãy số thập phân dạng 0.xxx qua hệ 2
+bool* StrFracToBin(string frac);
 
 //Chuyển số thực Dec dạng string qua bool* nhị phân theo dạng   ±1.F * 2^E
 bool* StrDecToBin(string Dec);
