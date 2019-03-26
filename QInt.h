@@ -1,5 +1,10 @@
+#ifndef __QINT_H__
+#define __QINT_H__
+
 #include <iostream>
 #include <string>
+
+#pragma pack(1)
 
 using namespace std;
 
@@ -114,3 +119,5 @@ string QInttoDecString(const QInt &x);
 
 //Hàm chuyển chuỗi thập lục phân sang nhị phân.
 bool* StrHextoBin(string Str);
+
+#endif
