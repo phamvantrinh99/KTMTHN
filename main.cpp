@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 				getline(Inp, s);
 				QInt Result;
 				string Final;
-				if (s.find('+') < s.length() || s.find('-') < s.length() || s.find('*') < s.length() || s.find('/') < s.length()) // Nhận biết toán hạng để thực hiện phép toán số học
+				if (s.find('+') < s.length() || (s.find('-') < s.length() && s[s.find('-')+1] == ' ' && s[0]!='-') || s.find('*') < s.length() || s.find('/') < s.length()) // Nhận biết toán hạng để thực hiện phép toán số học
 				{
 					//-----------------tách các thành phần p và các toán hạng, toán tử
 					string n = s.substr(0, s.find(' '));
